@@ -10,6 +10,3 @@ ENVIRONMENT: /home/idriss/IDRISS/Udacity DRL/deep-reinforcement-learning/p3_coll
 device: cpu # Possible values cuda or cpu
 
 n_episodes: 1400
-max_t: 1000
-TIME_STEPS: 20
-UPDATE: 10

@@ -15,13 +15,14 @@ from utils import read_config
 class Agent:
     """Interacts with and learns from the environment."""
 
-    def __init__(self, state_size, action_size, random_seed):
+    def __init__(self, state_size, action_size, num_agents, random_seed):
         """Initialize an Agent object.
 
         Params
         ======
             state_size (int): dimension of each state
             action_size (int): dimension of each action
+            num_agents (int): number of agents
             random_seed (int): random seed
         """
 
@@ -31,6 +32,7 @@ class Agent:
 
         self.state_size = state_size
         self.action_size = action_size
+        self.num_agents = num_agents
         self.seed = random.seed(random_seed)
 
         # Actor Network (w/ Target Network)
@@ -52,7 +54,7 @@ class Agent:
         )
 
         # Noise process
-        self.noise = OUNoise(action_size, random_seed)
+        self.noise = OUNoise((num_agents, action_size), random_seed)
 
         # Replay memory
         self.memory = ReplayBuffer(
@@ -62,28 +64,33 @@ class Agent:
             random_seed,
         )
 
-    def step(self, state, action, reward, next_state, done, num_update=1):
+    def step(self, states, actions, rewards, next_states, dones):
         """Save experience in replay memory,
         and use random sample from buffer to learn."""
         # Save experience / reward
-        self.memory.add(state, action, reward, next_state, done)
+        for i in range(self.num_agents):
+            self.memory.add(
+                states[i, :], actions[i, :], rewards[i], next_states[i, :], dones[i]
+            )
 
         # Learn, if enough samples are available in memory
         if len(self.memory) > self.config["BATCH_SIZE"]:
-            for _ in range(num_update):
-                experiences = self.memory.sample()
-                self.learn(experiences, self.config["GAMMA"])
+            experiences = self.memory.sample()
+            self.learn(experiences, self.config["GAMMA"])
 
-    def act(self, state, add_noise=True):
+    def act(self, states, add_noise=True):
         """Returns actions for given state as per current policy."""
-        state = torch.from_numpy(state).float().to(self.device)
+        states = torch.from_numpy(states).float().to(self.device)
+        actions = np.zeros((self.num_agents, self.action_size))
         self.actor_local.eval()
         with torch.no_grad():
-            action = self.actor_local(state).cpu().data.numpy()
+            for agent_num, state in enumerate(states):
+                action = self.actor_local(state).cpu().data.numpy()
+                actions[agent_num, :] = action
         self.actor_local.train()
         if add_noise:
-            action += self.noise.sample()
-        return np.clip(action, -1, 1)
+            actions += self.noise.sample()
+        return np.clip(actions, -1, 1)
 
     def reset(self):
         self.noise.reset()

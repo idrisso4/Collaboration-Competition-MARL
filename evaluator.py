@@ -11,7 +11,6 @@ def evaluate(
     actor,
     device,
     n_episodes=100,
-    max_t=1000,
 ):
     """Evaluation method.
     Params
@@ -21,7 +20,6 @@ def evaluate(
         actor: the trained actor
         device: device cpu or gpu
         n_episodes (int): maximum number of training episodes
-        max_t (int): maximum number of timesteps per episode
     """
     scores = []
     scores_window = deque(maxlen=100)
@@ -29,7 +27,7 @@ def evaluate(
         env_info = env.reset(train_mode=True)[brain_name]
         state = env_info.vector_observations[0]
         score = 0
-        for _ in range(max_t):
+        while True:
             state = torch.from_numpy(state).float().to(device)
             actor.eval()
             with torch.no_grad():

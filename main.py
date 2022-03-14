@@ -46,6 +46,7 @@ if __name__ == "__main__":
     agent_config = {
         "state_size": state_size,
         "action_size": action_size,
+        "num_agents": len(env_info.agents),
         "random_seed": 0,
     }
 
@@ -59,7 +60,6 @@ if __name__ == "__main__":
             brain_name=brain_name,
             agent_config=agent_config,
             n_episodes=config["n_episodes"],
-            max_t=config["max_t"],
         )
 
         fig = plt.figure()
@@ -75,4 +75,4 @@ if __name__ == "__main__":
         model.load_state_dict(torch.load("checkpoint_actor.pth"))
         model.eval()
 
-        evaluate(env, brain_name, model, device, n_episodes=100, max_t=1000)
+        evaluate(env, brain_name, model, device, n_episodes=100)
