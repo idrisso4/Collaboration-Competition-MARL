@@ -77,4 +77,4 @@ if __name__ == "__main__":
         model.load_state_dict(torch.load("checkpoint_actor.pth"))
         model.eval()
 
-        evaluate(env, brain_name, model, device, n_episodes=100)
+        evaluate(env, brain_name, action_size, model, device, n_episodes=100)
