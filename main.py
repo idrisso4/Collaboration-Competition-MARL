@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
     if model_train:
 
-        scores = train(
+        scores, avg_score_list = train(
             env=env,
             brain_name=brain_name,
             agent_config=agent_config,
@@ -65,8 +65,10 @@ if __name__ == "__main__":
         fig = plt.figure()
         ax = fig.add_subplot(111)
         plt.plot(np.arange(len(scores)), scores)
+        plt.plot(np.arange(len(avg_score_list)), avg_score_list)
         plt.ylabel("Score")
         plt.xlabel("Episode")
+        plt.savefig("Rewards per Episode.png")
         plt.show()
 
     if model_eval:

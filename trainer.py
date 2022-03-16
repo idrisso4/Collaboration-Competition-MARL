@@ -57,6 +57,6 @@ def train(env, brain_name: str, agent_config: dict, n_episodes=2000):
             torch.save(agent.actor_local.state_dict(), "checkpoint_actor.pth")
             torch.save(agent.critic_local.state_dict(), "checkpoint_critic.pth")
 
-            return avg_score_list
+            return scores, avg_score_list
 
-    return avg_score_list
+    return scores, avg_score_list

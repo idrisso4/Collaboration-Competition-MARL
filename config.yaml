@@ -9,4 +9,4 @@ WEIGHT_DECAY: 0  # L2 weight decay
 ENVIRONMENT: /home/idriss/IDRISS/Udacity DRL/deep-reinforcement-learning/p3_collab-compet/Tennis_Linux/Tennis.x86_64
 device: cpu # Possible values cuda or cpu
 
-n_episodes: 1400
+n_episodes: 2000
